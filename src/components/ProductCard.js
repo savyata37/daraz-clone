@@ -1,21 +1,57 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import styles from './css/ProductCard.module.css'; 
+
+import React from "react";
+import { Link } from "react-router-dom";
+import styles from "./css/ProductCard.module.css";
+import DynamicPrice from "./DynamicPrice";
 
 
 function ProductCard({ product, addToCart }) {
+  const productId = product.product_id || product.id;
+  const image = product.image || product.img;
+  const productName = product.product_name || product.name;
+
+  if (!productId) {
+    console.warn("⚠️ Missing product_id in:", product);
+    return null;
+  }
+
   return (
-     <div className="page">
     <div className={styles.card}>
-      <Link to={`/product/${product.id}`}>
-        <img src={product.img} alt={product.name} className={styles.image} />
+      <Link to={`/product/${productId}`}>
+        <img
+          src={image || "/fallback.jpg"}
+          alt={productName || "Product image"}
+          className={styles.image}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "/fallback.jpg";
+          }}
+        />
       </Link>
-      <h3 className={styles.name}>{product.name}</h3>
-      <p className={styles.price}>₹{product.price}</p>
-      <button className={styles.button} onClick={() => addToCart(product)}>Add to Cart</button>
-    </div>
+
+      <h3 className={styles.name}>{productName}</h3>
+
+      <div className={styles.prices}>
+        <DynamicPrice
+          productId={productId}
+          fallbackPrice={product.selling_price || product.price}
+          basePrice={product.base_price || product.price}
+        />
+      </div>
+{/* 
+      <button className={styles.button} onClick={() => addToCart(product)}>
+        Add to Cart
+      </button> */}
+      <button
+  className={styles.button}
+  onClick={() => addToCart(product)}
+>
+  Add to Cart
+</button>
+
     </div>
   );
 }
 
 export default ProductCard;
+

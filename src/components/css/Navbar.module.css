@@ -44,3 +44,29 @@
   color: white;
   gap: 20px;
 }
+.searchResults {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  width: 300px;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 2px;
+  padding-left: 0;
+  list-style: none;
+  z-index: 1000;
+}
+
+.searchResultItem {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.searchResultItem:hover {
+  background-color: #eee;
+}
+
+.noResults {
+  padding: 8px 12px;
+  color: #666;
+}

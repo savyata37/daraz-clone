@@ -1,3 +1,7 @@
+
+
+
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './css/Cart.module.css';
@@ -16,7 +20,7 @@ function Cart({ cart, setCart, isLoggedIn }) {
   };
 
   const total = cart.reduce(
-    (sum, p, idx) => sum + parseFloat(p.selling_price) * quantities[idx],
+    (sum, p, idx) => sum + parseFloat(p.selling_price || 0) * quantities[idx],
     0
   ).toFixed(2);
 
@@ -29,7 +33,9 @@ function Cart({ cart, setCart, isLoggedIn }) {
 
     setIsPaying(true);
     const payload = cart.map((item, idx) => ({
-      ...item,
+      id: item.product_id,
+      name: item.product_name,
+      price: item.selling_price,
       quantity: quantities[idx],
     }));
 
@@ -54,36 +60,44 @@ function Cart({ cart, setCart, isLoggedIn }) {
   };
 
   return (
-     <div className="page">
-    <div className={styles.cart}>
-      <h2>Your Cart</h2>
-      {cart.length === 0 && <p>No items added yet.</p>}
-      {cart.map((p, idx) => (
-        <div key={idx} className={styles.item}>
-          <p>{p.name}</p>
-          <p>₹{parseFloat(p.selling_price).toFixed(2)}</p>
-          <div className={styles.quantityControls}>
-            <button onClick={() => updateQuantity(idx, -1)}>-</button>
-            <span className={styles.quantity}>{quantities[idx]}</span>
-            <button onClick={() => updateQuantity(idx, 1)}>+</button>
+    <div className="page">
+      <div className={styles.cart}>
+        <h2>Your Cart</h2>
+        {cart.length === 0 && <p>No items added yet.</p>}
+        {cart.map((p, idx) => (
+          <div key={idx} className={styles.item}>
+            <img
+              src={p.image}
+              alt={p.product_name}
+              className={styles.itemImage}
+            />
+            <div className={styles.details}>
+              <p>{p.product_name}</p>
+              <p>₹{parseFloat(p.selling_price || 0).toFixed(2)}</p>
+              <div className={styles.quantityControls}>
+                <button onClick={() => updateQuantity(idx, -1)}>-</button>
+                <span className={styles.quantity}>{quantities[idx]}</span>
+                <button onClick={() => updateQuantity(idx, 1)}>+</button>
+              </div>
+            </div>
           </div>
-        </div>
-      ))}
-      {cart.length > 0 && (
-        <>
-          <h3>Total: ₹{total}</h3>
-          <button
-            onClick={handlePay}
-            className={styles.payButton}
-            disabled={isPaying}
-          >
-            {isPaying ? 'Processing...' : 'Pay'}
-          </button>
-        </>
-      )}
-    </div>
+        ))}
+        {cart.length > 0 && (
+          <>
+            <h3>Total: ₹{total}</h3>
+            <button
+              onClick={handlePay}
+              className={styles.payButton}
+              disabled={isPaying}
+            >
+              {isPaying ? 'Processing...' : 'Pay'}
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }
 
 export default Cart;
+

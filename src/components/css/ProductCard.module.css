@@ -67,3 +67,66 @@
 .button:hover {
   background-color: #bf3617;
 }
+
+
+.card {
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  position: relative;
+  background: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.image {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.prices {
+  margin-top: 8px;
+}
+
+.price {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #e53935; /* red for discount price */
+}
+
+.basePrice {
+  font-size: 1rem;
+  color: #777;
+  text-decoration: line-through;
+  margin-left: 8px;
+}
+
+.discountBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #e53935;
+  color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  user-select: none;
+}
+
+
+/* ProductCard.module.css */
+.crossed {
+  text-decoration: line-through;
+  color: gray;
+}
+.discount {
+  background-color: #ffd700;
+  padding: 2px 6px;
+  font-weight: bold;
+}
+.priceHighlight {
+  color: red;
+  font-weight: bold;
+}
