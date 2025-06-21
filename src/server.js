@@ -244,18 +244,6 @@ app.get('/api/pricing/:id', async (req, res) => {
   }
 });
 
-
-    res.json({
-      basePrice: sellingPrice.toFixed(2),
-      finalPrice: dynamicPrice.toFixed(2),
-      discountPercent,
-    });
-  } catch (err) {
-    console.error('Error in /api/pricing:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);

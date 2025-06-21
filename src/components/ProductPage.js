@@ -861,6 +861,120 @@
 
 
 
+// import React, { useEffect, useState } from 'react';
+// import { useParams } from 'react-router-dom';
+// import styles from './css/ProductPage.module.css';
+// import DynamicPrice from './DynamicPrice';
+
+// function ProductPage({ addToCart }) {
+//   const { id } = useParams();
+//   const [product, setProduct] = useState(null);
+//   const [loading, setLoading] = useState(true);
+//   const [quantity, setQuantity] = useState(1);
+//   const [error, setError] = useState(null);
+
+//   useEffect(() => {
+//     setLoading(true);
+//     setError(null);
+//     fetch('http://localhost:5000/products')
+//       .then(res => {
+//         if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+//         return res.json();
+//       })
+//       .then(data => {
+//         const found = data.products.find(p => p.product_id === id);
+//         if (!found) {
+//           setError(`Product with id ${id} not found`);
+//           setProduct(null);
+//         } else {
+//           setProduct(found);
+//         }
+//       })
+//       .catch(err => {
+//         setError('Failed to load product data.');
+//         setProduct(null);
+//       })
+//       .finally(() => setLoading(false));
+//   }, [id]);
+
+//   // Handlers to adjust quantity within bounds
+//   const increaseQty = () => {
+//     if (product && quantity < product.stock_left) {
+//       setQuantity(quantity + 1);
+//     }
+//   };
+
+//   const decreaseQty = () => {
+//     if (quantity > 1) {
+//       setQuantity(quantity - 1);
+//     }
+//   };
+
+//   if (loading) {
+//     return <main style={{ padding: '2rem' }}>Loading product...</main>;
+//   }
+
+//   if (error) {
+//     return <main style={{ padding: '2rem', color: 'red' }}>{error}</main>;
+//   }
+
+//   if (!product) {
+//     return <main style={{ padding: '2rem' }}>Product not found.</main>;
+//   }
+
+//   return (
+//     <div className={styles.page}>
+//       <div className={styles.container}>
+//         <div className={styles.imageWrapper}>
+//           <img
+//             src={product.image || '/placeholder.jpg'}
+//             alt={product.product_name || 'Product image'}
+//             className={styles.image}
+//             onError={e => {
+//               e.target.src = '/placeholder.jpg';
+//             }}
+//           />
+//         </div>
+
+//         <div className={styles.details}>
+//           <h1 className={styles.name}>{product.product_name}</h1>
+
+//           <div className={styles.prices}>
+//             <DynamicPrice
+//               productId={product.product_id}
+//               fallbackPrice={product.selling_price}
+//               basePrice={product.base_price}
+//             />
+//           </div>
+
+//           <p><b>Description</b></p>
+//           <p>{product.description}</p>
+
+//           <p><b>Stock:</b> {product.stock_left}</p>
+
+//           <div className={styles.quantityControls}>
+//             <button onClick={decreaseQty} disabled={quantity <= 1}>-</button>
+//             <span className={styles.quantity}>{quantity}</span>
+//             <button onClick={increaseQty} disabled={quantity >= product.stock_left}>+</button>
+//           </div>
+
+//           <button
+//             className={styles.button}
+//             onClick={() => addToCart({ ...product, quantity })}
+//             disabled={product.stock_left < 1}
+//           >
+//             {product.stock_left < 1 ? 'Out of Stock' : 'Add to Cart'}
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+    
+//   );
+// }
+
+// export default ProductPage;
+
+
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './css/ProductPage.module.css';
@@ -872,6 +986,7 @@ function ProductPage({ addToCart }) {
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState(null);
+  const [latestPrice, setLatestPrice] = useState(null); // ✅ dynamic price
 
   useEffect(() => {
     setLoading(true);
@@ -944,6 +1059,7 @@ function ProductPage({ addToCart }) {
               productId={product.product_id}
               fallbackPrice={product.selling_price}
               basePrice={product.base_price}
+              onPriceLoad={(price) => setLatestPrice(price)} // ✅ capture price
             />
           </div>
 
@@ -960,15 +1076,24 @@ function ProductPage({ addToCart }) {
 
           <button
             className={styles.button}
-            onClick={() => addToCart({ ...product, quantity })}
-            disabled={product.stock_left < 1}
+            onClick={() =>
+              addToCart({
+                ...product,
+                dynamicPrice: latestPrice ?? product.selling_price, // ✅ pass dynamicPrice
+                quantity,
+              })
+            }
+            disabled={product.stock_left < 1 || latestPrice === null}
           >
-            {product.stock_left < 1 ? 'Out of Stock' : 'Add to Cart'}
+            {product.stock_left < 1
+              ? 'Out of Stock'
+              : latestPrice === null
+              ? 'Loading Price...'
+              : 'Add to Cart'}
           </button>
         </div>
       </div>
     </div>
-    
   );
 }
 
