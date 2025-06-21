@@ -44,11 +44,31 @@
   color: white;
   gap: 20px;
 }
+.searchWrapper {
+  position: relative; /* Important: so .searchResults is positioned relative to this */
+}
+
+.searchForm {
+  display: flex;
+  align-items: center;
+  z-index: 2; /* Ensures input is above dropdown if needed */
+  position: relative;
+}
+
+.searchForm input {
+  padding: 6px;
+  margin-right: 5px;
+  width: 300px; /* Optional: match dropdown width */
+  box-sizing: border-box;
+}
+
 .searchResults {
   position: absolute;
+  top: 100%; /* Puts it directly below input field */
+  left: 0;
   background: white;
   border: 1px solid #ccc;
-  width: 300px;
+  width: 40%; /* match input width */
   max-height: 200px;
   overflow-y: auto;
   margin-top: 2px;
@@ -69,4 +89,13 @@
 .noResults {
   padding: 8px 12px;
   color: #666;
+}
+
+.logoutButton {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 1rem;
 }

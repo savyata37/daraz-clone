@@ -84,7 +84,28 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-// User signin route
+// // User signin route
+// app.post('/signin', async (req, res) => {
+//   const { email, password } = req.body;
+//   if (!email || !password)
+//     return res.status(400).json({ error: 'Missing email or password' });
+
+//   try {
+//     const users = await readCSV(USERS_CSV);
+//     const match = users.find(
+//       (u) =>
+//         (u.email || '').trim().toLowerCase() === email.trim().toLowerCase() &&
+//         (u.password || '').trim() === password.trim()
+//     );
+
+//     if (match) return res.json({ success: true });
+//     else return res.status(401).json({ error: 'Invalid credentials' });
+//   } catch (err) {
+//     console.error('Signin error:', err);
+//     res.status(500).json({ error: 'Server error' });
+//   }
+// });
+
 app.post('/signin', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password)
@@ -98,13 +119,19 @@ app.post('/signin', async (req, res) => {
         (u.password || '').trim() === password.trim()
     );
 
-    if (match) return res.json({ success: true });
-    else return res.status(401).json({ error: 'Invalid credentials' });
+    if (match) {
+      // Return success with user info (exclude sensitive info like password)
+      const { password, ...userWithoutPassword } = match;
+      return res.json({ success: true, user: userWithoutPassword });
+    } else {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
   } catch (err) {
     console.error('Signin error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 let categoryTrendScores = {};
 
